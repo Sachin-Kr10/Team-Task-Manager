@@ -226,32 +226,44 @@ const ProjectDetail = () => {
   };
 
   const addMem = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!mEmail.trim()) {
-      return toast.error('Email required');
+  if (!mEmail.trim()) {
+    return toast.error('Email required');
+  }
+
+  setSub(true);
+
+  try {
+    const response = await projectsAPI.addMember(id, {
+      email: mEmail.trim().toLowerCase(),
+      role: mRole
+    });
+
+    if (response?.data?.data) {
+      setProject(response.data.data);
+    } else {
+      await load();
     }
 
-    setSub(true);
+    toast.success('Member added successfully');
 
-    try {
-      await projectsAPI.addMember(id, {
-        email: mEmail,
-        role: mRole
-      });
+    setShowMM(false);
+    setMEmail('');
+    setMRole('member');
 
-      toast.success('Member added');
+  } catch (err) {
+    console.error(err);
 
-      setShowMM(false);
-      setMEmail('');
+    toast.error(
+      err.response?.data?.message ||
+      'Failed to invite member'
+    );
 
-      load();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed');
-    } finally {
-      setSub(false);
-    }
-  };
+  } finally {
+    setSub(false);
+  }
+};
 
   const remMem = async () => {
     if (!showRemoveMemberModal) return;
@@ -604,6 +616,138 @@ const ProjectDetail = () => {
         )}
 
         <Modal
+          isOpen={showTM}
+          onClose={() => {
+            setShowTM(false);
+            resetTf();
+          }}
+          title={editTask ? 'Update Task' : 'Create New Task'}
+        >
+          <form onSubmit={handleTask} className="space-y-6">
+            <input
+              type="text"
+              value={tf.title}
+              onChange={(e) =>
+                setTf({
+                  ...tf,
+                  title: e.target.value
+                })
+              }
+              className={inputStyle}
+              placeholder="Task Title"
+              required
+            />
+
+            <textarea
+              value={tf.description}
+              onChange={(e) =>
+                setTf({
+                  ...tf,
+                  description: e.target.value
+                })
+              }
+              rows={4}
+              className={`${inputStyle} resize-none`}
+              placeholder="Description"
+            />
+
+            <div className="grid grid-cols-2 gap-4">
+              <select
+                value={tf.priority}
+                onChange={(e) =>
+                  setTf({
+                    ...tf,
+                    priority: e.target.value
+                  })
+                }
+                className={inputStyle}
+              >
+                {Object.entries(priCfg).map(([v, c]) => (
+                  <option key={v} value={v}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={tf.status}
+                onChange={(e) =>
+                  setTf({
+                    ...tf,
+                    status: e.target.value
+                  })
+                }
+                className={inputStyle}
+              >
+                {Object.entries(statusCfg).map(([v, c]) => (
+                  <option key={v} value={v}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <select
+              value={tf.assignee}
+              onChange={(e) =>
+                setTf({
+                  ...tf,
+                  assignee: e.target.value
+                })
+              }
+              className={inputStyle}
+            >
+              <option value="">Unassigned</option>
+
+              {project.members?.map((m) => (
+                <option
+                  key={m.user?._id}
+                  value={m.user?._id}
+                >
+                  {m.user?.name}
+                </option>
+              ))}
+            </select>
+
+            <input
+              type="date"
+              value={tf.dueDate}
+              onChange={(e) =>
+                setTf({
+                  ...tf,
+                  dueDate: e.target.value
+                })
+              }
+              className={inputStyle}
+            />
+
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowTM(false);
+                  resetTf();
+                }}
+                className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 px-5 py-3 rounded-xl font-bold transition-all"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                disabled={sub}
+                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-5 py-3 rounded-xl font-bold transition-all"
+              >
+                {sub
+                  ? 'Saving...'
+                  : editTask
+                  ? 'Update Task'
+                  : 'Add Task'}
+              </button>
+            </div>
+          </form>
+        </Modal>
+        <Modal
   isOpen={showMM}
   onClose={() => {
     setShowMM(false);
@@ -740,6 +884,7 @@ const ProjectDetail = () => {
     </div>
   </div>
 </Modal>
+
       </div>
     </div>
   );
