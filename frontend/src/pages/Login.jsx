@@ -59,18 +59,7 @@ const Login = () => {
             TaskFlow brings your team together with Kanban boards, role-based access, and real-time progress tracking.
           </p>
 
-          <div className="flex items-center gap-6">
-            {[
-              { value: '10K+', label: 'Tasks tracked' },
-              { value: '500+', label: 'Teams active' },
-              { value: '99.9%', label: 'Uptime' }
-            ].map((stat) => (
-              <div key={stat.label}>
-                <p className="text-2xl font-black text-white">{stat.value}</p>
-                <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{stat.label}</p>
-              </div>
-            ))}
-          </div>
+          
         </div>
       </div>
 
