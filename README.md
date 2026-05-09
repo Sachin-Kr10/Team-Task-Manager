@@ -1,6 +1,6 @@
 # Team Task Manager 🚀
 
-A professional, production-ready **full-stack team task management platform** built with React.js, Express.js, and MongoDB. Features glassmorphic UI design, role-based access control, Kanban-style task boards, and real-time progress tracking.
+A modern full-stack team collaboration and task management platform built with React, Express, and MongoDB. It features secure authentication, role-based access control,sleek and responsive task management, and real-time project tracking with a sleek responsive design.
 
 ![Tech Stack](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react)
 ![Tech Stack](https://img.shields.io/badge/Express.js-4-000000?style=flat-square&logo=express)
