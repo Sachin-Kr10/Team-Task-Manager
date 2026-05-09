@@ -1,188 +1,359 @@
-import { useState, useEffect } from 'react';
-import { dashboardAPI } from '../services/api';
-import { useAuth } from '../contexts/AuthContext';
-import toast from 'react-hot-toast';
+import { useState, useEffect } from 'react'
+import { dashboardAPI } from '../services/api'
+import { useAuth } from '../contexts/AuthContext'
+import toast from 'react-hot-toast'
 import {
-  HiOutlineFolder, HiOutlineClipboardList, HiOutlineCheckCircle,
-  HiOutlineExclamationCircle, HiOutlineLightningBolt, HiOutlineClock,
+  HiOutlineFolder,
+  HiOutlineClipboardList,
+  HiOutlineCheckCircle,
+  HiOutlineExclamationCircle,
+  HiOutlineLightningBolt,
+  HiOutlineClock,
   HiOutlineArrowRight
-} from 'react-icons/hi';
-import { Link } from 'react-router-dom';
+} from 'react-icons/hi'
+import { Link } from 'react-router-dom'
 
 const statCards = [
-  { key: 'totalProjects', icon: HiOutlineFolder, label: 'Active Projects', gradient: 'linear-gradient(135deg, #3B82F6, #06B6D4)', shadow: 'rgba(99,102,241,0.3)' },
-  { key: 'totalTasks', icon: HiOutlineClipboardList, label: 'Total Tasks', gradient: 'linear-gradient(135deg, #3b82f6, #2dd4bf)', shadow: 'rgba(59,130,246,0.3)' },
-  { key: 'completedThisWeek', icon: HiOutlineCheckCircle, label: 'Done This Week', gradient: 'linear-gradient(135deg, #10b981, #059669)', shadow: 'rgba(16,185,129,0.3)' },
-  { key: 'overdueTasks', icon: HiOutlineExclamationCircle, label: 'Overdue', gradient: 'linear-gradient(135deg, #ef4444, #f97316)', shadow: 'rgba(239,68,68,0.3)' }
-];
+  {
+    key: 'totalProjects',
+    icon: HiOutlineFolder,
+    label: 'Active Projects',
+    gradient: 'from-blue-500 to-cyan-400',
+   
+  },
+  {
+    key: 'totalTasks',
+    icon: HiOutlineClipboardList,
+    label: 'Total Tasks',
+    gradient: 'from-cyan-500 to-blue-500',
+    
+  },
+  {
+    key: 'completedThisWeek',
+    icon: HiOutlineCheckCircle,
+    label: 'Done This Week',
+    gradient: 'from-emerald-500 to-green-400',
+  },
+  {
+    key: 'overdueTasks',
+    icon: HiOutlineExclamationCircle,
+    label: 'Overdue',
+    gradient: 'from-rose-500 to-orange-400',
+  }
+]
 
 const statusChart = [
-  { label: 'To Do', status: 'todo', color: '#818cf8', icon: '🎯' },
-  { label: 'In Progress', status: 'in-progress', color: '#fbbf24', icon: '⚡' },
-  { label: 'In Review', status: 'review', color: '#a78bfa', icon: '🔍' },
-  { label: 'Completed', status: 'completed', color: '#34d399', icon: '✅' }
-];
+  {
+    label: 'To Do',
+    status: 'todo',
+    color: '#818cf8',
+    icon: '🎯'
+  },
+  {
+    label: 'In Progress',
+    status: 'in-progress',
+    color: '#fbbf24',
+    icon: '⚡'
+  },
+  {
+    label: 'In Review',
+    status: 'review',
+    color: '#a78bfa',
+    icon: '🔍'
+  },
+  {
+    label: 'Completed',
+    status: 'completed',
+    color: '#34d399',
+    icon: '✅'
+  }
+]
 
 const Dashboard = () => {
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const [stats, setStats] = useState(null)
 
-  useEffect(() => { fetchStats(); }, []);
+  const [loading, setLoading] = useState(true)
+
+  const { user } = useAuth()
+
+  useEffect(() => {
+    fetchStats()
+  }, [])
 
   const fetchStats = async () => {
     try {
-      const res = await dashboardAPI.getStats();
-      setStats(res.data.data);
-    } catch (error) {
-      toast.error('Failed to load dashboard');
-    } finally { setLoading(false); }
-  };
+      const res = await dashboardAPI.getStats()
+
+      setStats(res.data.data)
+    } catch {
+      toast.error('Failed to load dashboard')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   if (loading) {
     return (
       <div className="space-y-8 animate-pulse">
-        <div className="h-10 w-64 bg-white/5 rounded-xl" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {[1, 2, 3, 4].map(i => <div key={i} className="h-32 glass-card-static" />)}
+        <div className="h-12 w-72 rounded-2xl bg-white/[0.05]" />
+
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="h-40 rounded-[28px] border border-white/10 bg-[rgba(15,23,42,0.72)] backdrop-blur-2xl"
+            />
+          ))}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="h-80 glass-card-static" />
-          <div className="h-80 glass-card-static" />
+
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <div className="h-[420px] rounded-[28px] border border-white/10 bg-[rgba(15,23,42,0.72)] backdrop-blur-2xl" />
+
+          <div className="h-[420px] rounded-[28px] border border-white/10 bg-[rgba(15,23,42,0.72)] backdrop-blur-2xl" />
         </div>
       </div>
-    );
+    )
   }
 
   return (
-    <div className="space-y-8">
-      {/* Hero Greeting */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in">
-        <div>
-          <h2 className="text-3xl font-extrabold text-white tracking-tight">
-            Hello, <span className="gradient-text">{user?.name?.split(' ')[0]}</span>
-          </h2>
-          <p className="text-white/40 text-lg mt-1 font-medium">
-            You have {stats?.myTasks || 0} tasks to focus on today.
-          </p>
-        </div>
-        <Link to="/my-tasks" className="btn-primary group">
-          View My Tasks
-          <HiOutlineArrowRight className="group-hover:translate-x-1 transition-transform" />
-        </Link>
+    <div className="relative space-y-8 overflow-hidden">
+      {/* Background */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-[-10%] top-0 h-[320px] w-[320px] rounded-full bg-blue-500/10 blur-3xl" />
+
+        <div className="absolute bottom-0 right-[-10%] h-[320px] w-[320px] rounded-full bg-violet-500/10 blur-3xl" />
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* Hero */}
+      <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[rgba(15,23,42,0.72)] p-8 backdrop-blur-3xl shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+        {/* Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.14),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.10),transparent_30%)]" />
+
+        {/* Grid */}
+        <div className="absolute inset-0 opacity-[0.03] [background-image:linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:60px_60px]" />
+
+        <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-blue-400">
+              Workspace Overview
+            </div>
+
+            <h1 className="text-4xl font-black leading-tight tracking-tight text-white md:text-5xl">
+              Hello,&nbsp;
+              <span className="bg-gradient-to-r from-blue-400 via-cyan-300 to-violet-400 bg-clip-text text-transparent">
+                {user?.name?.split(' ')[0]}
+              </span>
+            </h1>
+
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-400">
+              You currently have{' '}
+              <span className="font-bold text-white">
+                {stats?.myTasks || 0}
+              </span>{' '}
+              active tasks waiting for your attention today.
+            </p>
+          </div>
+
+          <Link
+            to="/my-tasks"
+            className="group inline-flex items-center justify-center gap-3 rounded-2xl border border-blue-400/20 bg-gradient-to-r from-blue-600 to-cyan-500 px-6 py-4 text-sm font-bold text-white shadow-[0_0_30px_rgba(59,130,246,0.25)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_45px_rgba(59,130,246,0.35)]"
+          >
+            View My Tasks
+
+            <HiOutlineArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         {statCards.map((card, i) => (
           <div
             key={card.key}
-            className="glass-card p-6 relative overflow-hidden group animate-slide-up"
-            style={{ animationDelay: `${i * 80}ms` }}
+            className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-[rgba(15,23,42,0.72)] p-6 backdrop-blur-2xl shadow-[0_10px_40px_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.45)]"
+            style={{
+              animationDelay: `${i * 80}ms`
+            }}
           >
-            <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-[0.07] group-hover:scale-110 transition-transform duration-700"
-              style={{ background: card.gradient }} />
-            <div className="flex items-start justify-between relative z-10">
+            {/* Glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.10),transparent_35%)]" />
+
+            <div
+              className={`absolute -right-8 -top-8 h-40 w-40 rounded-full bg-gradient-to-br ${card.gradient} opacity-10 blur-2xl transition-transform duration-700 group-hover:scale-125`}
+            />
+
+            <div className="relative z-10 flex items-start justify-between">
               <div>
-                <p className="text-white/40 text-sm font-medium mb-1">{card.label}</p>
-                <p className="text-4xl font-extrabold text-white tracking-tight">{stats?.[card.key] || 0}</p>
+                <p className="text-sm font-medium text-slate-400">
+                  {card.label}
+                </p>
+
+                <h2 className="mt-3 text-5xl font-black tracking-tight text-white">
+                  {stats?.[card.key] || 0}
+                </h2>
               </div>
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform duration-300"
-                style={{ background: card.gradient, boxShadow: `0 8px 20px -5px ${card.shadow}` }}>
-                <card.icon size={28} className="text-white" />
+
+              <div
+                className={`flex h-16 w-16 items-center justify-center rounded-[24px] bg-gradient-to-br ${card.gradient} text-white ${card.glow} transition-all duration-300 group-hover:rotate-6 group-hover:scale-110`}
+              >
+                <card.icon size={30} />
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Status Distribution */}
-        <div className="glass-card-static p-8 animate-slide-up" style={{ animationDelay: '200ms' }}>
-          <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary-500/10 text-primary-400">
-              <HiOutlineLightningBolt size={20} />
+      {/* Lower Section */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        {/* Distribution */}
+        <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[rgba(15,23,42,0.72)] p-8 backdrop-blur-3xl shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.12),transparent_35%)]" />
+
+          <div className="relative z-10">
+            <div className="mb-8 flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400 shadow-[0_0_25px_rgba(59,130,246,0.15)]">
+                <HiOutlineLightningBolt size={26} />
+              </div>
+
+              <div>
+                <h3 className="text-2xl font-black text-white">
+                  Task Distribution
+                </h3>
+
+                <p className="text-sm text-slate-400">
+                  Track workflow progress across your workspace
+                </p>
+              </div>
             </div>
-            Task Distribution
-          </h3>
-          <div className="space-y-6">
-            {statusChart.map((cfg, i) => {
-              const count = stats?.statusBreakdown?.[cfg.status] || 0;
-              const total = stats?.totalTasks || 1;
-              const percentage = Math.round((count / total) * 100);
-              return (
-                <div key={cfg.status} className="group">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl">{cfg.icon}</span>
-                      <span className="text-sm font-semibold text-white/70 group-hover:text-white transition-colors">{cfg.label}</span>
+
+            <div className="space-y-6">
+              {statusChart.map((cfg, i) => {
+                const count =
+                  stats?.statusBreakdown?.[cfg.status] || 0
+
+                const total = stats?.totalTasks || 1
+
+                const percentage = Math.round(
+                  (count / total) * 100
+                )
+
+                return (
+                  <div key={cfg.status}>
+                    <div className="mb-3 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">
+                          {cfg.icon}
+                        </span>
+
+                        <div>
+                          <p className="text-sm font-bold text-white">
+                            {cfg.label}
+                          </p>
+
+                          <p className="text-xs text-slate-500">
+                            {count} Tasks
+                          </p>
+                        </div>
+                      </div>
+
+                      <span className="text-sm font-black text-white">
+                        {percentage}%
+                      </span>
                     </div>
-                    <div className="text-right">
-                      <span className="text-sm font-bold text-white block">{count}</span>
-                      <span className="text-[10px] text-white/30 uppercase tracking-wider">{percentage}%</span>
+
+                    <div className="h-3 overflow-hidden rounded-full bg-white/[0.04] ring-1 ring-white/5">
+                      <div
+                        className="h-full rounded-full transition-all duration-1000"
+                        style={{
+                          width: `${percentage}%`,
+                          background: `linear-gradient(90deg, ${cfg.color}, ${cfg.color}dd)`,
+                          transitionDelay: `${i * 120}ms`
+                        }}
+                      />
                     </div>
                   </div>
-                  <div className="h-2.5 rounded-full bg-white/5 overflow-hidden ring-1 ring-white/5">
-                    <div
-                      className="h-full rounded-full animate-bar-grow"
-                      style={{
-                        width: `${percentage}%`,
-                        background: `linear-gradient(90deg, ${cfg.color}, ${cfg.color}dd)`,
-                        animationDelay: `${300 + i * 150}ms`
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+                )
+              })}
+            </div>
           </div>
         </div>
 
-        {/* Activity Feed */}
-        <div className="glass-card-static p-8 flex flex-col animate-slide-up" style={{ animationDelay: '280ms' }}>
-          <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-accent-500/10 text-accent-400">
-              <HiOutlineClock size={20} />
-            </div>
-            Recent Activity
-          </h3>
-          <div className="space-y-3 flex-1 overflow-y-auto pr-2">
-            {stats?.recentTasks?.length > 0 ? (
-              stats.recentTasks.map((task) => (
-                <div
-                  key={task._id}
-                  className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:translate-x-1 transition-all duration-300"
-                >
-                  <div className="w-12 h-12 rounded-md flex items-center justify-center text-white font-bold text-lg shrink-0"
-                    style={{ background: task.assignee?.avatar || 'linear-gradient(135deg, #3B82F6, #06B6D4)' }}>
-                    {task.assignee?.name?.charAt(0) || '?'}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold text-white truncate">{task.title}</p>
-                    <p className="text-xs text-white/40 font-medium truncate">{task.project?.name}</p>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest ${
-                      task.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400' :
-                      task.status === 'in-progress' ? 'bg-amber-500/10 text-amber-400' :
-                      'bg-indigo-500/10 text-indigo-400'
-                    }`}>
-                      {task.status}
-                    </span>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="flex-1 flex flex-col items-center justify-center py-10 opacity-20">
-                <HiOutlineClipboardList size={64} />
-                <p className="mt-4 font-bold">No recent activity</p>
+        {/* Activity */}
+        <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[rgba(15,23,42,0.72)] p-8 backdrop-blur-3xl shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(6,182,212,0.10),transparent_35%)]" />
+
+          <div className="relative z-10 flex h-full flex-col">
+            <div className="mb-8 flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.15)]">
+                <HiOutlineClock size={24} />
               </div>
-            )}
+
+              <div>
+                <h3 className="text-2xl font-black text-white">
+                  Recent Activity
+                </h3>
+
+                <p className="text-sm text-slate-400">
+                  Latest updates from your workspace
+                </p>
+              </div>
+            </div>
+
+            <div className="flex-1 space-y-4 overflow-y-auto pr-1">
+              {stats?.recentTasks?.length > 0 ? (
+                stats.recentTasks.map((task) => (
+                  <div
+                    key={task._id}
+                    className="group flex items-center gap-4 rounded-[24px] border border-white/8 bg-white/[0.03] p-4 transition-all duration-300 hover:translate-x-1 hover:bg-white/[0.05]"
+                  >
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-400 to-violet-500 text-lg font-black text-white shadow-[0_0_25px_rgba(59,130,246,0.25)]">
+                      {task.assignee?.name?.charAt(0) ||
+                        '?'}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <h4 className="truncate text-sm font-bold text-white">
+                        {task.title}
+                      </h4>
+
+                      <p className="mt-1 truncate text-xs text-slate-400">
+                        {task.project?.name}
+                      </p>
+                    </div>
+
+                    <div>
+                      <span
+                        className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                          task.status === 'completed'
+                            ? 'bg-emerald-500/10 text-emerald-400'
+                            : task.status ===
+                              'in-progress'
+                            ? 'bg-amber-500/10 text-amber-400'
+                            : task.status === 'review'
+                            ? 'bg-violet-500/10 text-violet-400'
+                            : 'bg-blue-500/10 text-blue-400'
+                        }`}
+                      >
+                        {task.status}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="flex flex-1 flex-col items-center justify-center py-16 text-slate-500">
+                  <HiOutlineClipboardList size={70} />
+
+                  <p className="mt-5 text-base font-bold">
+                    No recent activity
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard
